@@ -1,0 +1,112 @@
+/* Animated login background */
+.login-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(120deg, #0f2027, #203a43, #2c5364, #29a041);
+  background-size: 400% 400%;
+  animation: bgShift 18s ease infinite;
+}
+
+@keyframes bgShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Card */
+.login-card {
+  background: rgba(20, 40, 30, 0.9);
+  border-radius: 16px;
+  padding: 32px;
+  width: 340px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  transform: translateY(0);
+}
+
+/* Fade-in animation */
+.animate-fade-in {
+  animation: fadeInScale 0.8s ease forwards;
+}
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Title */
+.login-title {
+  margin-bottom: 20px;
+  color: #ffd700;
+  font-size: 1.8em;
+  text-shadow: 0 0 8px rgba(41, 160, 65, 0.6);
+}
+
+/* Profile List */
+.profile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.profile-item {
+  padding: 14px;
+  border-radius: 10px;
+  background: #236905;
+  color: #f3f8f3;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.profile-item:hover {
+  background: rgb(41, 144, 65);
+  transform: translateY(-2px);
+}
+.profile-item.selected {
+  background: rgb(41, 144, 65);
+}
+.glow {
+  box-shadow: 0 0 12px rgba(41, 160, 65, 0.8),
+              0 0 24px rgba(41, 160, 65, 0.4);
+}
+
+/* Profile text */
+.profile-name {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+.profile-occupation {
+  font-size: 0.9em;
+  opacity: 0.85;
+}
+
+/* Continue button */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1em;
+  font-weight: bold;
+  background: #29a041;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.login-btn:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+.login-btn:hover:enabled {
+  background: #36c75a;
+}
+
+/* Pulsing effect */
+.pulse {
+  animation: pulseGlow 1.6s infinite;
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 8px #29a041; }
+  50% { box-shadow: 0 0 18px #ffd700; }
+}
