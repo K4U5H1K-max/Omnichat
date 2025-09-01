@@ -1,51 +1,68 @@
-# Omnichat
-OmniChat is a sophisticated, production-ready AI chatbot platform designed to deliver real-time, intelligent, and scalable conversational experiences. It combines a modern full-stack architecture with support for multiple AI providers, enabling seamless switching between models such as OpenAI, Anthropic, and Google Gemini.
+# Chatbot Capstone
 
-The application features real-time streaming responses, replicating the familiar live typing effect seen in professional AI tools. This ensures smooth and interactive conversations without long delays. Users can manage multiple chat sessions with persistent history stored in a database, allowing them to pick up conversations exactly where they left off.
+A production-ready full-stack AI chatbot with real-time streaming, session persistence, and multi-model provider support.
 
-A professional-grade user interface has been built with modern frontend technologies, offering a clean, responsive, and intuitive experience. Features like session management, provider switching, and context persistence are designed to support real-world use cases, whether for research, development, or production deployments.
+Tech Stack
 
-On the backend, OmniChat provides a scalable API layer that handles streaming communication, session persistence, and provider abstraction. The multi-provider architecture allows developers to integrate different AI models with minimal friction while maintaining consistent response handling. User authentication and role-based access features ensure secure usage and data privacy, making the platform suitable for professional and enterprise environments.
+Frontend: React (Vite) + TailwindCSS
 
-Database persistence has been implemented to store conversations, user profiles, and provider configurations, ensuring durability and enabling analytics or advanced customization in future extensions. The system is also structured for deployment in production environments, supporting containerization and cloud-based hosting.
+Backend: Express.js (Node.js)
 
-OmniChat is not just a demo—it is a ready-to-use foundation for developers, startups, and teams looking to build robust conversational AI products. Its modular design makes it easy to extend, customize, and scale while maintaining professional-grade standards across the stack.
+Styling: TailwindCSS + custom CSS
 
-With a balance of cutting-edge functionality, robust engineering, and clean design, OmniChat demonstrates how a multi-provider AI chatbot can be developed into a reliable, full-featured, and production-ready application.
+Features:
 
-# REQUIREMENTS
-Before running this project, make sure you have the following installed:
+Real-time streaming responses (SSE)
 
-Node.js (v18 or higher)
+Session management with persistent history
+
+Multi-provider model switching (OpenAI, Anthropic, etc.)
+Installation & Setup
+Prerequisites
+
+Node.js v18+
 
 npm (comes with Node.js)
 
-# Backend (Express)
-
-express
-
-cors
-
-dotenv
-
-nodemon (dev dependency)
-
-# Frontend (React + Vite + Tailwind)
-
-react
-
-react-dom
-
-vite
-
-tailwindcss
-
-postcss
-
-autoprefixer
-
-Development Tools
-
 Git
 
-Code editor (VS Code recommended)
+Backend Setup
+cd backend-express
+npm install
+
+
+Start backend:
+
+npm run dev
+
+Frontend Setup
+cd frontend
+npm install
+npm run dev
+
+
+Frontend will run on http://localhost:5173 and backend on http://localhost:8003.
+
+# Environment Variables
+
+Create a file named .env inside backend-express/ and configure it:
+
+PORT=8003
+OPENAI_API_KEY=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
+
+
+
+# API Testing
+Health Check
+curl http://localhost:8003/health
+
+Send Chat (SSE Example)
+curl -N -X POST http://localhost:8003/chat/<SESSION_ID>/stream \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello AI!"}'
+# Screenshots
+Login page
+<img width="2560" height="1281" alt="image" src="https://github.com/user-attachments/assets/316c04be-03b4-41ed-afc1-47f1d484ef73" />
+
+Chatbot Interface
+<img width="2560" height="1281" alt="image" src="https://github.com/user-attachments/assets/083ef2ab-0c10-4f87-8065-9a88eb14ce2c" />
