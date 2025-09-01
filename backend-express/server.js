@@ -1,4 +1,7 @@
-// server.js - ExpressJS Backend Alternative
+
+import pkg from "pg";
+const { Pool } = pkg;
+
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -7,9 +10,27 @@ import fetch from "node-fetch";
 import dotenv from "dotenv";
 dotenv.config();
 
+const pool = new Pool({
+  host: "localhost",
+  port: 5432,
+  user: "omnichat",
+  password: "omnichatpass",
+  database: "omnichatdb"
+});
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+// List all users
+app.get("/users", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM users ORDER BY created_at ASC");
+    res.json(result.rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -61,42 +82,69 @@ app.post("/chat/:session_id/stream", async (req, res) => {
 });
 
 
-// In-memory session storage
-const sessions = {};
-const messages = {};
 
 // Create a new chat session
-app.post("/sessions", (req, res) => {
+app.post("/sessions", async (req, res) => {
   const { user_id, title } = req.body;
-  const session_id = crypto.randomUUID();
-  sessions[session_id] = { id: session_id, user_id, title, created_at: new Date().toISOString() };
-  messages[session_id] = [];
-  res.json({ session_id });
+  try {
+    const result = await pool.query(
+      "INSERT INTO sessions (user_id, title) VALUES ($1, $2) RETURNING id",
+      [user_id, title]
+    );
+    res.json({ session_id: result.rows[0].id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // List sessions for a user
-app.get("/sessions", (req, res) => {
+app.get("/sessions", async (req, res) => {
   const { user_id } = req.query;
-  const userSessions = Object.values(sessions)
-    .filter(s => s.user_id === user_id)
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  res.json(userSessions);
+  try {
+    const result = await pool.query(
+      "SELECT * FROM sessions WHERE user_id = $1 ORDER BY created_at DESC",
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
-
 // Get messages for a session
-app.get("/sessions/:session_id", (req, res) => {
+app.get("/sessions/:session_id", async (req, res) => {
   const { session_id } = req.params;
-  res.json(messages[session_id] || []);
+  try {
+    const result = await pool.query(
+      "SELECT * FROM messages WHERE session_id = $1 ORDER BY timestamp ASC",
+      [session_id]
+    );
+    res.json(result.rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // Save messages for a session
-app.post("/sessions/:session_id/messages", (req, res) => {
+app.post("/sessions/:session_id/messages", async (req, res) => {
   const { session_id } = req.params;
   const { messages: msgs } = req.body;
   if (!Array.isArray(msgs)) return res.status(400).json({ error: "messages must be an array" });
-  messages[session_id] = msgs;
-  res.json({ success: true });
+
+  try {
+    // Delete old messages for this session
+    await pool.query("DELETE FROM messages WHERE session_id = $1", [session_id]);
+    // Insert new messages
+    for (const msg of msgs) {
+      await pool.query(
+        "INSERT INTO messages (session_id, role, content, provider, model, timestamp) VALUES ($1, $2, $3, $4, $5, $6)",
+        [session_id, msg.role, msg.content, msg.provider, msg.model, msg.timestamp || new Date()]
+      );
+    }
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 app.listen(8003, ()=>console.log("Server on :8003"));
