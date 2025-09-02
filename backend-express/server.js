@@ -11,13 +11,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const pool = new Pool({
-  host: "localhost",
-  port: 5432,
-  user: "omnichat",
-  password: "omnichatpass",
-  database: "omnichatdb"
+  host: process.env.PGHOST,
+  port: process.env.PGPORT,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  database: process.env.PGDATABASE
 });
-
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
