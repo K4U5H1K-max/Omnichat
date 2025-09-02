@@ -35,7 +35,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 app.get("/models", (req,res)=>res.json({
-  openai: ["gpt-4o-mini"], anthropic: [], gemini: ["gemini-pro", "gemini-2.5-flash-lite"]
+  openai: ["gpt-4o-mini"], anthropic: [], gemini: ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.5-flash-lite"]
 }));
 
 app.post("/chat/:session_id/stream", async (req, res) => {
