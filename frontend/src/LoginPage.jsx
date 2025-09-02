@@ -10,10 +10,13 @@ export default function LoginPage({ onSelect }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8003/users")
-      .then(res => res.json())
-      .then(data => setProfiles(Array.isArray(data) ? data : []))
-      .catch(() => setProfiles([]));
+    // Use API_BASE from client.js
+    import("./api/client").then(mod => {
+      fetch(`${mod.API_BASE}/users`)
+        .then(res => res.json())
+        .then(data => setProfiles(Array.isArray(data) ? data : []))
+        .catch(() => setProfiles([]));
+    });
   }, []);
 
   const handleContinue = async () => {
