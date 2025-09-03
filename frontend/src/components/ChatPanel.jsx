@@ -7,7 +7,12 @@ export default function ChatPanel({ sessionId, provider, model, history, onUserS
   const [streaming, setStreaming] = useState(false);
   const [body, setBody] = useState(null);
   const [error, setError] = useState("");
-
+  const messagesEndRef = useRef(null);
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [history, streaming, error]);
   // Reset error when sessionId changes (switching chats)
   useEffect(() => { setError(""); }, [sessionId]);
 
