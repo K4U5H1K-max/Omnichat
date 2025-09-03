@@ -104,6 +104,18 @@ function App() {
     const timestamp = new Date().toISOString();
     setHistory((h) => {
       const newHistory = [...h, { ...msg, timestamp }];
+      // If this is the first user message, update the session title to a summary (first 40 chars)
+      if (current && newHistory.length === 1 && msg.role === "user") {
+        const summary = (msg.content || "").slice(0, 40);
+        // Update session title in backend
+        fetch(`${import.meta.env.VITE_API_BASE || "http://localhost:8003"}/sessions/${current}/title`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: summary })
+        });
+        // Update local session title
+        setSessions((sessions) => sessions.map(s => s.id === current ? { ...s, title: summary } : s));
+      }
       if (current) saveSessionMessages(current, newHistory);
       return newHistory;
     });

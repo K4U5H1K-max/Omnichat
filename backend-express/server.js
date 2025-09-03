@@ -125,6 +125,18 @@ app.get("/sessions/:session_id", async (req, res) => {
 });
 
 // Save messages for a session
+app.post("/sessions/:session_id/title", async (req, res) => {
+  const { session_id } = req.params;
+  const { title } = req.body;
+  if (!title) return res.status(400).json({ error: "title required" });
+  try {
+    await pool.query("UPDATE sessions SET title = $1 WHERE id = $2", [title, session_id]);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.post("/sessions/:session_id/messages", async (req, res) => {
   const { session_id } = req.params;
   const { messages: msgs } = req.body;
