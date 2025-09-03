@@ -56,6 +56,7 @@ export default function ChatPanel({ sessionId, provider, model, history, onUserS
           </div>
         )}
         {streaming && <div className="cursor">▍</div>}
+        <div ref={messagesEndRef} />
       </div>
       <div className="composer">
         <input
